@@ -19,11 +19,11 @@ const messageToBeSigned = {
 export const WagmiConnection = () => {
   const [signature, setSignature] = useState('');
 
-  const { isConnected } = useAccount();
+  const { isConnected, chainId } = useAccount();
   const { connectAsync, connectors } = useConnect();
 
-  const signer = useSigner();
-  const { signTypedDataAsync } = useSignTypedData(messageToBeSigned);
+  const signer = useSigner(chainId);
+  const { signTypedDataAsync } = useSignTypedData();
 
   const handleConnect = async () => {
     if (!isConnected) await connectAsync({ connector: connectors[0] });
@@ -40,6 +40,8 @@ export const WagmiConnection = () => {
       );
     else
       signature = await signTypedDataAsync({
+        types: messageToBeSigned.types,
+        domain: messageToBeSigned.domain,
         primaryType: 'PrimaryType',
         message: messageToBeSigned.value,
       });
