@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.25.0",
-    "@wagmi/core": "^2.6.5",
     "ethers": "^6.11.1",
     "next": "14.1.0",
     "react": "^18",

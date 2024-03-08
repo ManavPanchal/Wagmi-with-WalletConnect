@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAccount, useConnect, useSignTypedData } from 'wagmi';
+import { useAccount, useConnect, useDisconnect, useSignTypedData } from 'wagmi';
 import { useSigner } from '../context/ethers';
 
 const messageToBeSigned = {
@@ -21,12 +21,14 @@ export const WagmiConnection = () => {
 
   const { isConnected, chainId } = useAccount();
   const { connectAsync, connectors } = useConnect();
+  const { disconnectAsync } = useDisconnect();
 
   const signer = useSigner(chainId);
   const { signTypedDataAsync } = useSignTypedData();
 
-  const handleConnect = async () => {
-    if (!isConnected) await connectAsync({ connector: connectors[0] });
+  const handleConnection = async () => {
+    if (isConnected) await disconnectAsync({ connector: connectors[0] });
+    else await connectAsync({ connector: connectors[0] });
   };
 
   const handleSign = async ({ withEthersAdapterSigner = false }) => {
@@ -51,10 +53,10 @@ export const WagmiConnection = () => {
   return (
     <div className="flex gap-2 flex-col justify-center items-center mt-8">
       <button
-        onClick={handleConnect}
+        onClick={handleConnection}
         className="rounded-md bg-slate-500 px-5 py-2"
       >
-        Connect
+        Connect / Disconnect
       </button>
       {isConnected && (
         <>
